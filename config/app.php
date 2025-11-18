@@ -65,7 +65,7 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    'timezone' => 'UTC','Asia/Makassar', #mengatur waktu timestamp agar sesuai waktu di Makssar
 
     /*
     |--------------------------------------------------------------------------
