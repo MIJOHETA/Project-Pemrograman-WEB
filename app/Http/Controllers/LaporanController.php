@@ -7,7 +7,7 @@ use App\Models\Laporan;
 use App\Models\Fakultas;
 use App\Models\Jurusan;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Str; 
+
 
 class LaporanController extends Controller
 {
@@ -33,7 +33,6 @@ class LaporanController extends Controller
         $laporan->jurusan_id = $request->jurusan_id;
         $laporan->name = $request->name;          
         $laporan->type = $request->type;          
-        $laporan->description = $request->description; 
         $laporan->kontak = $request->kontak;       
         
         $laporan->save();
@@ -47,7 +46,6 @@ class LaporanController extends Controller
         $message = "Halo Admin, Laporan Baru Masuk!\n\n";
         $message .= "Pelapor: " . $report->name . "\n";
         $message .= "Tipe: " . $report->type . "\n";
-        $message .= "Isi: " . Str::limit($report->description, 50) . "\n\n";
         $message .= "Segera cek dashboard.";
 
         try {
