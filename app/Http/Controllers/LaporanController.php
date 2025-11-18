@@ -33,7 +33,6 @@ class LaporanController extends Controller
         $laporan->jurusan_id = $request->jurusan_id;
         $laporan->name = $request->name;          
         $laporan->type = $request->type;          
-        $laporan->description = $request->description; 
         $laporan->kontak = $request->kontak;       
         
         $laporan->save();
