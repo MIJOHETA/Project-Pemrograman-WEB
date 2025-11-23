@@ -7,7 +7,8 @@ use App\Models\Laporan;
 use App\Models\Fakultas;
 use App\Models\Jurusan;
 use Illuminate\Support\Facades\Http;
-
+use Illuminate\Support\Facades\Storage; 
+use Illuminate\Support\Str;
 
 class LaporanController extends Controller
 {
@@ -23,40 +24,57 @@ class LaporanController extends Controller
 
     public function store(Request $request) {
         $request->validate([
-            'name' => 'required',
-            'jurusan_id' => 'required',
-            'description' => 'required',
-            'kontak' => 'required',
+            'jenis_laporan' => 'required|in:Laporan,Aspirasi',
+            'jurusan_id'    => 'required',
+            'judul'         => 'required|max:255',
+            'deskripsi'     => 'required',
+            'foto'          => 'nullable|image|max:5120', 
+            'kategori'      => 'required_if:jenis_laporan,Laporan',
+            'lokasi'        => 'required_if:jenis_laporan,Laporan',
         ]);
 
-        $laporan = new Laporan;
-        $laporan->jurusan_id = $request->jurusan_id;
-        $laporan->name = $request->name;          
-        $laporan->type = $request->type;          
-        $laporan->kontak = $request->kontak;       
-        
-        $laporan->save();
+        $pathFoto = null;
+        if ($request->hasFile('foto')) {
+            $pathFoto = $request->file('foto')->store('laporan_images', 'public');
+        }
+
+        $laporan = Laporan::create([
+            'jenis_laporan' => $request->jenis_laporan,
+            'jurusan_id'    => $request->jurusan_id,
+            'nama'          => $request->nama ?? 'Anonim',
+            'kontak'        => $request->kontak,
+            'judul'         => $request->judul,
+            'deskripsi'     => $request->deskripsi,
+            'kategori'      => $request->kategori,
+            'lokasi'        => $request->lokasi,
+            'foto'          => $pathFoto,
+            'status'        => 'Baru' 
+        ]);
+
         $this->sendWhatsapp($laporan);
+
         return redirect()->back()->with('success', 'Laporan berhasil dikirim!');
     }
 
     private function sendWhatsapp($report) {
-        $adminPhone = '0882019547830';  
+        $adminPhone = '0882019547830'; 
         
-        $message = "Halo Admin, Laporan Baru Masuk!\n\n";
-        $message .= "Pelapor: " . $report->name . "\n";
-        $message .= "Tipe: " . $report->type . "\n";
-        $message .= "Segera cek dashboard.";
-
+        $message = "*LAPORAN BARU MASUK*\n";
+        $message .= "Judul: " . $report->judul . "\n";
+        $message .= "Jenis: " . $report->jenis_laporan . "\n";
+        $message .= "Isi: " . Str::limit($report->deskripsi, 100) . "\n";
+        
+        if ($report->foto) {
+            $message .= "Link Foto: " . asset('storage/' . $report->foto) . "\n";
+        }
+        
         try {
             Http::withHeaders([
-                'Authorization' => '', 
+                'Authorization' => 'TOKEN_FONNTE_ANDA', 
             ])->post('https://api.fonnte.com/send', [
                 'target' => $adminPhone,
                 'message' => $message,
             ]);
-        } catch (\Exception $e) {
-            \Log::error("Gagal kirim WA: " . $e->getMessage());
-        }
+        } catch (\Exception $e) {}
     }
 }

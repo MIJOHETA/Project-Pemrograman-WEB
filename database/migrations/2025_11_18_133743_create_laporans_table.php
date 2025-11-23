@@ -14,12 +14,16 @@ return new class extends Migration
         Schema::create('laporans', function (Blueprint $table) {
             $table->id();
             $table->foreignId('jurusan_id')->constrained('jurusans')->onDelete('cascade');
-            $table->string('name');
-            $table->string('type');
-            $table->text('description');
-            $table->string('kontak');
-            $table->enum('status', ['Menunggu Konfirmasi', 'Dalam Proses', 'Selesai'])->default('Menunggu Konfirmasi');
+            $table->string('jenis_laporan'); 
+            $table->string('nama')->nullable(); 
+            $table->string('kontak')->nullable(); 
+            $table->string('judul'); 
+            $table->text('deskripsi');
+            $table->string('lokasi')->nullable();   
+            $table->string('foto')->nullable();
+            $table->enum('status', ['Baru', 'Diproses', 'Selesai'])->default('Baru');
             $table->text('note')->nullable();
+
             $table->timestamps();
         });
     }
