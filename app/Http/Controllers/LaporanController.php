@@ -57,7 +57,7 @@ class LaporanController extends Controller
     }
 
     private function sendWhatsapp($report) {
-        $adminPhone = '0882019547830'; 
+        $adminPhone = '08.......'; // masukkan nomor admin tujuan 
         
         $message = "*LAPORAN BARU MASUK*\n";
         $message .= "Judul: " . $report->judul . "\n";
@@ -70,7 +70,7 @@ class LaporanController extends Controller
         
         try {
             Http::withHeaders([
-                'Authorization' => 'TOKEN_FONNTE_ANDA', 
+                'Authorization' => 'gPiwBWar4Qyzo6EZ2eNu', 
             ])->post('https://api.fonnte.com/send', [
                 'target' => $adminPhone,
                 'message' => $message,

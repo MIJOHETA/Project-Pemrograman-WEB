@@ -63,7 +63,7 @@ class AdminController extends Controller
 
         try {
             Http::withHeaders([
-                'Authorization' => 'TOKEN_FONNTE_ANDA', 
+                'Authorization' => 'gPiwBWar4Qyzo6EZ2eNu', 
             ])->post('https://api.fonnte.com/send', [
                 'target' => $laporan->kontak,
                 'message' => $message,
